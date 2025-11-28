@@ -3,13 +3,14 @@ import type { loginFromData, loginResponseData } from "@/api/user/type";
 import { defineStore } from "pinia";
 import type { UserState } from "./types/type";
 import { SET_Token,GET_Token } from "@/utils/token";
+import {constantRoutes} from "@/router/routes"
 
 let useUserStore = defineStore("user", {
   //数据存储
   state: (): UserState=> {
     return {
       token:GET_Token(),
-      
+      menuRoutes:constantRoutes,
     }
   },
   actions: {

@@ -20,6 +20,15 @@ export default defineConfig(({ mode, command }) => {
         symbolId:'icon-[dir]-[name]',
       })
     ],
+        //scss全局配置
+    css: {
+      preprocessorOptions: {
+        scss: {
+          // javascriptEnabled: true,
+          additionalData: '@import "@/styles/variable.scss";',
+        },
+      },
+    },
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url))
