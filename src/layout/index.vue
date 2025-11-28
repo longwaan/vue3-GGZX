@@ -2,6 +2,7 @@
 import logo from "@/layout/logo/index.vue"
 import menus from "@/layout/menu/index.vue"
 import useUserStore from "@/stores/modules/user";
+import tabbar from '@/layout/tabbar/index.vue'
 let useStore =useUserStore()
 </script>
 
@@ -14,7 +15,9 @@ let useStore =useUserStore()
       </el-scrollbar>
     </el-aside>
     <el-container>
-      <el-header>Header</el-header>
+      <el-header>
+        <tabbar></tabbar>
+      </el-header>
       <el-main>
         <router-view></router-view>
       </el-main>
@@ -37,5 +40,9 @@ let useStore =useUserStore()
 
 .el-main {
   padding: 20px;
+}
+
+.el-header{
+  padding:10px 20px;
 }
 </style>
