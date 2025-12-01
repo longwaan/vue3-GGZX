@@ -20,6 +20,7 @@ export const constantRoutes = [
       hidden: false,
       icon: ''
     },
+    redirect:'home',
     children: [
       {
         path: '/home',
