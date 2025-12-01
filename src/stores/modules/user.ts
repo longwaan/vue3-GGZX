@@ -1,4 +1,4 @@
-import { reqLogin } from "@/api/user";
+import { reqLogin, reqUserInfo } from "@/api/user";
 import type { loginFromData, loginResponseData } from "@/api/user/type";
 import { defineStore } from "pinia";
 import type { UserState } from "./types/type";
@@ -11,6 +11,8 @@ let useUserStore = defineStore("user", {
     return {
       token:GET_Token(),
       menuRoutes:constantRoutes,
+      avatar:'',
+      username:'',
     }
   },
   actions: {
@@ -26,6 +28,14 @@ let useUserStore = defineStore("user", {
       } else {
         return Promise.reject(new Error(result.message))
       }
+    },
+    async getUserInfo(){
+      let result = await reqUserInfo();
+      this.username=result.data.name
+      this.avatar=result.data.avatar
+
+      // console.log(result);
+
     }
   },
   // 计算属性

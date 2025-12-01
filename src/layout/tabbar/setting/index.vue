@@ -3,9 +3,11 @@ import { Delete } from '@element-plus/icons-vue';
 import useSettingFoldStore from '@/stores/modules/setting';
 import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
+import useUserStore from '@/stores/modules/user';
 const useSetting = useSettingFoldStore()
 const isfullscreen = ref(false)
 const { refresh } = storeToRefs(useSetting)
+const UserStore=useUserStore()
 const updateRefresh = () => {
   refresh.value = !refresh.value
   // console.log('1111')
@@ -32,17 +34,17 @@ const fullScreen = () => {
       <el-button icon="Setting" circle></el-button>
     </div>
     <div class="avatar_container">
-      <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+      <el-avatar :src="UserStore.avatar" />
       <el-dropdown>
         <span class="el-dropdown-link">
-          Dropdown List
+        {{ UserStore.username }}
           <el-icon class="el-icon--right">
             <arrow-down />
           </el-icon>
         </span>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item>退出登录</el-dropdown-item>
+            <el-dropdown-item >退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
