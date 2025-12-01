@@ -4,10 +4,14 @@ import useSettingFoldStore from '@/stores/modules/setting';
 import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
 import useUserStore from '@/stores/modules/user';
+import { useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 const useSetting = useSettingFoldStore()
 const isfullscreen = ref(false)
 const { refresh } = storeToRefs(useSetting)
-const UserStore=useUserStore()
+const UserStore = useUserStore()
+const $router = useRouter()
+const $route = useRoute()
 const updateRefresh = () => {
   refresh.value = !refresh.value
   // console.log('1111')
@@ -22,6 +26,11 @@ const fullScreen = () => {
   isfullscreen.value = !isfullscreen.value
 }
 
+const logout = async () => {
+  await UserStore.logoutUser();
+  $router.push({ path: '/login', query: { redirect: $route.path } })
+
+}
 
 
 </script>
@@ -37,14 +46,14 @@ const fullScreen = () => {
       <el-avatar :src="UserStore.avatar" />
       <el-dropdown>
         <span class="el-dropdown-link">
-        {{ UserStore.username }}
+          {{ UserStore.username }}
           <el-icon class="el-icon--right">
             <arrow-down />
           </el-icon>
         </span>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item >退出登录</el-dropdown-item>
+            <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>

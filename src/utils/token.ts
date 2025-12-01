@@ -8,7 +8,12 @@ const GET_Token=()=>{
    return localStorage.getItem("TOKEN")
 }
 
+const REMOVE_Token=()=>{
+  return localStorage.removeItem("TOKEN")
+}
+
 export {
   SET_Token,
   GET_Token,
+  REMOVE_Token,
 }

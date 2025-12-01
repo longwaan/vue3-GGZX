@@ -1,8 +1,8 @@
-import { reqLogin, reqUserInfo } from "@/api/user";
+import { reqLogin, reqLogout, reqUserInfo } from "@/api/user";
 import type { loginFromData, loginResponseData } from "@/api/user/type";
 import { defineStore } from "pinia";
 import type { UserState } from "./types/type";
-import { SET_Token, GET_Token } from "@/utils/token";
+import { SET_Token, GET_Token, REMOVE_Token } from "@/utils/token";
 import { constantRoutes } from "@/router/routes"
 
 let useUserStore = defineStore("user", {
@@ -31,9 +31,22 @@ let useUserStore = defineStore("user", {
     },
     async getUserInfo() {
       let result = await reqUserInfo();
-      if (result.code == 200) {
+      if (result.code === 200) {
         this.username = result.data.name
         this.avatar = result.data.avatar
+      } else {
+        return Promise.reject(new Error(result.message))
+      }
+    },
+
+    async logoutUser() {
+      let result = await reqLogout();
+      if (result.code == 200) {
+        this.token = '';
+        this.username = '';
+        this.avatar = '';
+        REMOVE_Token()
+        return 'ok'
       } else {
         return Promise.reject(new Error(result.message))
       }
