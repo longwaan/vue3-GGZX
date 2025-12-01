@@ -2,11 +2,22 @@
 import { Delete } from '@element-plus/icons-vue';
 import useSettingFoldStore from '@/stores/modules/setting';
 import { storeToRefs } from 'pinia';
-const useSetting=useSettingFoldStore()
-const {refresh}=storeToRefs(useSetting)
+import { ref } from 'vue';
+const useSetting = useSettingFoldStore()
+const isfullscreen = ref(false)
+const { refresh } = storeToRefs(useSetting)
 const updateRefresh = () => {
-  refresh.value=!refresh.value
+  refresh.value = !refresh.value
   // console.log('1111')
+}
+
+const fullScreen = () => {
+  if (!isfullscreen.value) {
+    document.documentElement.requestFullscreen()
+  } else {
+    document.exitFullscreen()
+  }
+  isfullscreen.value = !isfullscreen.value
 }
 
 
@@ -17,7 +28,7 @@ const updateRefresh = () => {
   <div class="setting_container">
     <div>
       <el-button icon="refresh" circle @click="updateRefresh"></el-button>
-      <el-button icon="FullScreen" circle></el-button>
+      <el-button icon="FullScreen" circle @click="fullScreen"></el-button>
       <el-button icon="Setting" circle></el-button>
     </div>
     <div class="avatar_container">
