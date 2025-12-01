@@ -4,6 +4,7 @@ let useSettingFoldStore = defineStore("SettingFoldStore", {
   state: () => {
     return {
       fold: false,
+      refresh:false,
     }
   }
 

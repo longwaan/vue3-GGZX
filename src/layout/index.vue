@@ -4,6 +4,7 @@ import menus from "@/layout/menu/index.vue"
 import useUserStore from "@/stores/modules/user";
 import tabbar from '@/layout/tabbar/index.vue'
 import useSettingFoldStore from "@/stores/modules/setting";
+import Main from "@/layout/main/index.vue"
 let useStore = useUserStore()
 let useSettingStore = useSettingFoldStore()
 </script>
@@ -21,7 +22,7 @@ let useSettingStore = useSettingFoldStore()
         <tabbar></tabbar>
       </el-header>
       <el-main :class="{ fold: useSettingStore.fold ? true : false }">
-        <router-view></router-view>
+        <Main></Main>
       </el-main>
     </el-container>
   </el-container>

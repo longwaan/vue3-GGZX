@@ -1,5 +1,14 @@
 <script setup lang="ts">
 import { Delete } from '@element-plus/icons-vue';
+import useSettingFoldStore from '@/stores/modules/setting';
+import { storeToRefs } from 'pinia';
+const useSetting=useSettingFoldStore()
+const {refresh}=storeToRefs(useSetting)
+const updateRefresh = () => {
+  refresh.value=!refresh.value
+  // console.log('1111')
+}
+
 
 
 </script>
@@ -7,7 +16,7 @@ import { Delete } from '@element-plus/icons-vue';
 <template>
   <div class="setting_container">
     <div>
-      <el-button icon="refresh" circle></el-button>
+      <el-button icon="refresh" circle @click="updateRefresh"></el-button>
       <el-button icon="FullScreen" circle></el-button>
       <el-button icon="Setting" circle></el-button>
     </div>
