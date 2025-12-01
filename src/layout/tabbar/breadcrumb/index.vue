@@ -19,7 +19,7 @@ const changeIcon=()=>{
     </div>
 
     <el-breadcrumb :separator-icon="ArrowRight">
-      <el-breadcrumb-item v-for="(item,index) in $route.matched" :key="index" :to="item.path">
+      <el-breadcrumb-item v-for="(item,index) in $route.matched" :key="index" v-show="item.meta.title" :to="item.path">
       <el-icon>
         <component :is="item.meta.icon"></component>
       </el-icon>
