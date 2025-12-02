@@ -7,7 +7,7 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import './styles/index.scss'
 import App from './App.vue'
 import router from './router'
-
+import './permisstion'
 const app = createApp(App)
 
 app.use(pinia)
