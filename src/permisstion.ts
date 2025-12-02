@@ -2,10 +2,12 @@ import router from "./router";
 import useUserStore from "./stores/modules/user";
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css' // 基础样式
+import setting from "./setting";
 //取消加载动画小圆球
 NProgress.configure({ showSpinner: false })
 
 router.beforeEach(async (to: any, from: any, next: any) => {
+  document.title = `${setting.title}-${to.meta.title}`
   NProgress.start() // 开始进度条
   let userStore = useUserStore()
   if (userStore.token) {
@@ -36,4 +38,5 @@ router.beforeEach(async (to: any, from: any, next: any) => {
 
 router.afterEach((to: any, from: any) => {
   NProgress.done() // 请求成功结束进度条
+  document.title = `${setting.title}-${to.meta.title}`
 })
