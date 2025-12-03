@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reqAddOrUpdateTradeMark, reqTradeList } from '@/api/product/trademark'
+import { reqAddOrUpdateTradeMark, reqDeleteTradeMark, reqTradeList } from '@/api/product/trademark'
 import type { Record, TradeMark, TradeMarkResponseData } from '@/api/product/trademark/type'
 import { ElMessage, type FormRules, type UploadProps } from 'element-plus'
 import { nextTick, onMounted, reactive, ref } from 'vue'
@@ -133,6 +133,20 @@ const updateTradeMark = (row: any) => {
 
   Object.assign(tradeform, row)
 }
+
+const remove = async (id: number) => {
+  // console.log(row)
+  let result = await reqDeleteTradeMark(id)
+  if (result.code === 200) {
+    ElMessage({
+      type: 'success',
+      message: '删除成功'
+    })
+    getTradeMarkList()
+  } else {
+    return Promise.reject(new Error(result.message))
+  }
+}
 </script>
 
 <template>
@@ -150,7 +164,12 @@ const updateTradeMark = (row: any) => {
         <el-table-column prop="address" label="操作">
           <template #="{ row, index }">
             <el-button type="primary" icon="Edit" @click="updateTradeMark(row)"></el-button>
-            <el-button type="primary" icon="Delete"></el-button>
+
+            <el-popconfirm :title="`你确定要删除` + `${row.tmName}?`" @confirm="remove(row.id)" width="200px">
+              <template #reference>
+                <el-button type="primary" icon="Delete"></el-button>
+              </template>
+            </el-popconfirm>
           </template>
         </el-table-column>
       </el-table>
