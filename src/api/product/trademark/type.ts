@@ -5,7 +5,7 @@ interface ResponseData {
 }
 
 interface TradeMark {
-  id: number,
+  id?: number,
   logoUrl: string,
   tmName: string,
 }
