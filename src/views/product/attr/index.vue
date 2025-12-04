@@ -120,19 +120,19 @@ const toEdit = (row: AttrValue, $index: number) => {
 
 }
 
-const deleteAttr=async(id:number)=>{
+const deleteAttr = async (id: number) => {
   // console.log(id)
-  let result:any=await reqRemoveAttr(id)
-  if(result.code===200){
+  let result: any = await reqRemoveAttr(id)
+  if (result.code === 200) {
     ElMessage({
-      type:'success',
-      message:'删除成功'
+      type: 'success',
+      message: '删除成功'
     })
     getAttr();
-  }else{
-        ElMessage({
-      type:'error',
-      message:'删除失败'
+  } else {
+    ElMessage({
+      type: 'error',
+      message: '删除失败'
     })
     getAttr();
   }
@@ -158,7 +158,11 @@ const deleteAttr=async(id:number)=>{
           <el-table-column label="操作">
             <template #="{ row, index }">
               <el-button type="warning" icon="Edit" @click="editAttr(row)"></el-button>
-              <el-button type="danger" icon="Delete" @click="deleteAttr(row.id)"></el-button>
+              <el-popconfirm :title="`你确定要删除${row.attrName}?`" @confirm="deleteAttr(row.id)" width="200px">
+                <template #reference>
+                  <el-button type="danger" icon="Delete"></el-button>
+                </template>
+              </el-popconfirm>
             </template>
           </el-table-column>
         </el-table>
@@ -184,7 +188,7 @@ const deleteAttr=async(id:number)=>{
             </el-table-column>
             <el-table-column prop="address" label="操作">
               <template #="{ row, $index }">
-                <el-button icon="Delete" @click="attrParam.attrValueList.splice($index,1)"></el-button>
+                <el-button icon="Delete" @click="attrParam.attrValueList.splice($index, 1)"></el-button>
               </template>
             </el-table-column>
           </el-table>
