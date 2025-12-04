@@ -7,15 +7,21 @@ onMounted(() => {
   getC1()
 })
 
-const getC1 = () => (
-  categoryStore.getC1()
-)
+const getC1 = () => {
+  categoryStore.getC1();
+}
 
 const handler = () => {
+  categoryStore.c2Arr = [];
+  categoryStore.c2Id = '';
+  categoryStore.c3Arr = [];
+  categoryStore.c3Id = '';
   categoryStore.getC2()
 }
 
 const handler2 = () => {
+  categoryStore.c3Arr = [];
+  categoryStore.c3Id = '';
   categoryStore.getC3()
 }
 
@@ -33,12 +39,12 @@ const handler2 = () => {
         </el-form-item>
         <el-form-item label="二级分类" prop="zone">
           <el-select v-model="categoryStore.c2Id" placeholder="请选择" @change="handler2">
-            <el-option v-for="(c2,index) in categoryStore.c2Arr" :key="c2.id" :label="c2.name" :value="c2.id" />
+            <el-option v-for="(c2, index) in categoryStore.c2Arr" :key="c2.id" :label="c2.name" :value="c2.id" />
           </el-select>
         </el-form-item>
         <el-form-item label="三级分类" prop="time">
           <el-select v-model="categoryStore.c3Id" placeholder="请选择">
-            <el-option v-for="(c3,index) in categoryStore.c3Arr" :key="c3.id" :label="c3.name" :value="c3.id" />
+            <el-option v-for="(c3, index) in categoryStore.c3Arr" :key="c3.id" :label="c3.name" :value="c3.id" />
           </el-select>
         </el-form-item>
       </el-form>
