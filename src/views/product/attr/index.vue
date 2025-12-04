@@ -2,7 +2,7 @@
 import { reqAddOrUpdateAttr, reqAttr } from '@/api/product/attr';
 import type { AttrList, Attr, AttrResponseData, AttrValue } from '@/api/product/attr/type';
 import Category from '@/components/Category/index.vue'
-import { reactive, ref, watch } from 'vue';
+import { nextTick, reactive, ref, watch } from 'vue';
 import useCategoryStore from '@/stores/modules/category';
 import { ElMessage } from 'element-plus';
 let categoryStore = useCategoryStore()
@@ -14,6 +14,8 @@ let attrParam = reactive<Attr>({
   categoryLevel: 3,
   attrValueList: [],
 })
+//存储对应的组件实例el-input
+let inputArr = ref<any>([])
 
 watch(() => categoryStore.c3Id, () => {
   if (categoryStore.c3Id) {
@@ -48,6 +50,10 @@ const addAttrValue = () => {
   attrParam.attrValueList.push({
     valueName: '',
     flag: true,
+  })
+  //新增时聚焦最后一个属性值
+  nextTick(()=>{
+    inputArr.value[attrParam.attrValueList.length-1].focus();
   })
 }
 
@@ -107,6 +113,11 @@ const tolook = (row: AttrValue, $index: number) => {
 
 const toEdit = (row: AttrValue, $index: number) => {
   row.flag = true;
+  //编辑现有属性值自动聚焦
+  nextTick(() => {
+    inputArr.value[$index].focus()
+  })
+
 }
 </script>
 
@@ -148,7 +159,8 @@ const toEdit = (row: AttrValue, $index: number) => {
             <el-table-column label="序号" width="100" type="index" />
             <el-table-column label="属性值名称">
               <template #="{ row, $index }">
-                <el-input v-if="row.flag" @blur="tolook(row, $index)" v-model="row.valueName" placeholder="请输入" />
+                <el-input :ref="(vc: any) => inputArr[$index] = vc" v-if="row.flag" @blur="tolook(row, $index)"
+                  v-model="row.valueName" placeholder="请输入" />
                 <div v-else @click="toEdit(row, $index)">{{ row.valueName }}</div>
               </template>
             </el-table-column>
