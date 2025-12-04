@@ -51,6 +51,7 @@ export type{
   ResponseData,
   CategoryObj,
   CategoryResponseData,
+  AttrValue,
   AttrValueList,
   Attr,
   AttrList,

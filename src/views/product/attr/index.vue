@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reqAddOrUpdateAttr, reqAttr } from '@/api/product/attr';
-import type { AttrList, Attr, AttrResponseData } from '@/api/product/attr/type';
+import type { AttrList, Attr, AttrResponseData, AttrValue } from '@/api/product/attr/type';
 import Category from '@/components/Category/index.vue'
 import { reactive, ref, watch } from 'vue';
 import useCategoryStore from '@/stores/modules/category';
@@ -47,6 +47,7 @@ const cancel = () => {
 const addAttrValue = () => {
   attrParam.attrValueList.push({
     valueName: '',
+    flag: true,
   })
 }
 
@@ -73,6 +74,39 @@ const saveAttr = async () => {
     scene.value = 0
     getAttr()
   }
+}
+
+const tolook = (row: AttrValue, $index: number) => {
+  //属性值为空时，高度消失
+  if (row.valueName.trim() == '') {
+    attrParam.attrValueList.splice($index, 1)
+    ElMessage({
+      type: 'error',
+      message: '属性值不能为空',
+    })
+    return
+  }
+  //属性值重复时
+  let repeat = attrParam.attrValueList.find((item) => {
+    if (item != row) {
+      return item.valueName == row.valueName
+    }
+  })
+
+  if (repeat) {
+    attrParam.attrValueList.splice($index, 1)
+    ElMessage({
+      type: 'error',
+      message: '属性值不能重复'
+    })
+    return
+  }
+
+  row.flag = false;
+}
+
+const toEdit = (row: AttrValue, $index: number) => {
+  row.flag = true;
 }
 </script>
 
@@ -113,8 +147,9 @@ const saveAttr = async () => {
           <el-table :data="attrParam.attrValueList" style="width: 100%">
             <el-table-column label="序号" width="100" type="index" />
             <el-table-column label="属性值名称">
-              <template #="{ row, index }">
-                <el-input v-model="row.valueName" placeholder="请输入" />
+              <template #="{ row, $index }">
+                <el-input v-if="row.flag" @blur="tolook(row, $index)" v-model="row.valueName" placeholder="请输入" />
+                <div v-else @click="toEdit(row, $index)">{{ row.valueName }}</div>
               </template>
             </el-table-column>
             <el-table-column prop="address" label="操作">
