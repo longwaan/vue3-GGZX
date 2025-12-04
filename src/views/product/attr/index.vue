@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reqAddOrUpdateAttr, reqAttr } from '@/api/product/attr';
+import { reqAddOrUpdateAttr, reqAttr, reqRemoveAttr } from '@/api/product/attr';
 import type { AttrList, Attr, AttrResponseData, AttrValue } from '@/api/product/attr/type';
 import Category from '@/components/Category/index.vue'
 import { nextTick, reactive, ref, watch } from 'vue';
@@ -52,8 +52,8 @@ const addAttrValue = () => {
     flag: true,
   })
   //新增时聚焦最后一个属性值
-  nextTick(()=>{
-    inputArr.value[attrParam.attrValueList.length-1].focus();
+  nextTick(() => {
+    inputArr.value[attrParam.attrValueList.length - 1].focus();
   })
 }
 
@@ -119,6 +119,24 @@ const toEdit = (row: AttrValue, $index: number) => {
   })
 
 }
+
+const deleteAttr=async(id:number)=>{
+  // console.log(id)
+  let result:any=await reqRemoveAttr(id)
+  if(result.code===200){
+    ElMessage({
+      type:'success',
+      message:'删除成功'
+    })
+    getAttr();
+  }else{
+        ElMessage({
+      type:'error',
+      message:'删除失败'
+    })
+    getAttr();
+  }
+}
 </script>
 
 <template>
@@ -128,7 +146,7 @@ const toEdit = (row: AttrValue, $index: number) => {
       <div v-show="scene === 0">
         <el-button type="primary" icon="Plus" @click="addAttr"
           :disabled="categoryStore.c3Id ? false : true">添加平台属性</el-button>
-        <el-table :data="attrData" style="width: 100%" border>
+        <el-table :data="attrData" style="width: 100%;margin-top: 20px;" border>
           <el-table-column label="序号" width="100" type="index" align="center" />
           <el-table-column prop="attrName" label="属性名称" />
           <el-table-column label="属性名称值">
@@ -140,7 +158,7 @@ const toEdit = (row: AttrValue, $index: number) => {
           <el-table-column label="操作">
             <template #="{ row, index }">
               <el-button type="warning" icon="Edit" @click="editAttr(row)"></el-button>
-              <el-button type="danger" icon="Delete"></el-button>
+              <el-button type="danger" icon="Delete" @click="deleteAttr(row.id)"></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -165,7 +183,9 @@ const toEdit = (row: AttrValue, $index: number) => {
               </template>
             </el-table-column>
             <el-table-column prop="address" label="操作">
-              <el-button icon="Delete"></el-button>
+              <template #="{ row, $index }">
+                <el-button icon="Delete" @click="attrParam.attrValueList.splice($index,1)"></el-button>
+              </template>
             </el-table-column>
           </el-table>
           <el-form-item>

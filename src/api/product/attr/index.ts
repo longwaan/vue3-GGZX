@@ -6,7 +6,8 @@ enum API{
   GETC2_URL='/admin/product/getCategory2/',
   GETC3_URL='/admin/product/getCategory3/',
   GETATTR_URL='/admin/product/attrInfoList/',
-  ADDORUPDATEATTR_URL='/admin/product/saveAttrInfo'
+  ADDORUPDATEATTR_URL='/admin/product/saveAttrInfo',
+  REMOVEATTR_URL='/admin/product/deleteAttr/'
 }
 
 const reqC1Attr=()=>request.get<any,CategoryResponseData>(API.GETC1_URL)
@@ -14,6 +15,7 @@ const reqC2Attr=(category1Id:number|string)=>request.get<any,CategoryResponseDat
 const reqC3Attr=(category2Id:number|string)=>request.get<any,CategoryResponseData>(API.GETC3_URL+category2Id)
 const reqAttr=(category1Id:number|string,category2Id:number|string,category3Id:number|string)=>request.get<any,AttrResponseData>(API.GETATTR_URL+`${category1Id}/${category2Id}/${category3Id}`)
 const reqAddOrUpdateAttr=(data:Attr)=>request.post(API.ADDORUPDATEATTR_URL,data)
+const reqRemoveAttr=(id:number)=>request.delete(API.REMOVEATTR_URL+id)
 
 export {
   reqC1Attr,
@@ -21,5 +23,6 @@ export {
   reqC3Attr,
   reqAttr,
   reqAddOrUpdateAttr,
+  reqRemoveAttr,
 
 }
