@@ -11,6 +11,7 @@ let pageNo = ref<number>(1)
 let pageSize = ref<number>(3)
 let spuAttr = ref<SpuData[]>([])
 let spu = ref<any>()
+let sku =ref<any>()
 let total = ref<number>()
 let scene = ref<number>(0)//0：显示已有SPU 1：添加或者修改已有SPU  2：添加SKU的结构
 const getCategory = () => {
@@ -19,8 +20,8 @@ const getCategory = () => {
 onMounted(() => {
   getCategory()
 })
-const getSpu = async (page=1) => {
-  pageNo.value=page
+const getSpu = async (page = 1) => {
+  pageNo.value = page
   let result: HasSpuResponseData = await reqSpu(pageNo.value, pageSize.value, categoryStore.c3Id)
   spuAttr.value = result.data.records
   // console.log(result)
@@ -51,14 +52,21 @@ const updateSpu = (row: SpuData) => {
 }
 
 //切换场景
-const changeScene = (obj:any) => {
-  scene.value=obj.flag;
-  if(obj.params =='update'){
+const changeScene = (obj: any) => {
+  scene.value = obj.flag;
+  if (obj.params == 'update') {
     getSpu(pageNo.value)
-  }else{
+  } else {
     getSpu()
   }
 
+}
+
+//添加sku
+const addSku = (row: SpuData) => {
+  scene.value = 2
+  // console.log(row)
+  sku.value.initSkuData(categoryStore.c1Id,categoryStore.c2Id,row)
 }
 
 </script>
@@ -68,14 +76,15 @@ const changeScene = (obj:any) => {
     <category></category>
     <el-card style="margin-top: 20px;">
       <div v-show="scene === 0">
-        <el-button icon="Plus" type="primary" @click="addSpu" :disabled="categoryStore.c3Id?false:true">添加SPU</el-button>
+        <el-button icon="Plus" type="primary" @click="addSpu"
+          :disabled="categoryStore.c3Id ? false : true">添加SPU</el-button>
         <el-table :data="spuAttr" style="width: 100%;margin: 20px 0px;" border>
           <el-table-column type="index" label="序号" width="100" align="center" />
           <el-table-column prop="spuName" label="SPU名称" />
           <el-table-column prop="description" label="SPU描述" show-overflow-tooltip />
           <el-table-column label="操作">
             <template #="{ row, index }">
-              <el-button icon="Plus" title="添加sku" type="primary" size="small"></el-button>
+              <el-button icon="Plus" @click="addSku(row)" title="添加sku" type="primary" size="small"></el-button>
               <el-button icon="Edit" @click="updateSpu(row)" title="修改spu" type="warning" size="small"></el-button>
               <el-button icon="View" title="查看spu列表" type="info" size="small"></el-button>
               <el-button icon="Delete" title="删除spu" type="danger" size="small"></el-button>
@@ -87,7 +96,7 @@ const changeScene = (obj:any) => {
       </div>
 
       <spu-form ref="spu" v-show="scene === 1" @changeScene="changeScene"></spu-form>
-      <sku-from v-show="scene === 2" @changeScene="changeScene"></sku-from>
+      <sku-from ref="sku" v-show="scene === 2" @changeScene="changeScene"></sku-from>
     </el-card>
   </div>
 </template>

@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import type { AllTradeMark, HasSaleAttrResponseData, HasSpuResponseData, SaleAllResponseData, SpuData, SpuHasImg } from "./type";
+import type { AllTradeMark, HasSaleAttrResponseData, HasSpuResponseData, SaleAllResponseData, SkuData, SpuData, SpuHasImg } from "./type";
 
 enum API {
   GETSPU_URL = '/admin/product/',
@@ -14,6 +14,10 @@ enum API {
   ADDSPU_URL = '/admin/product/saveSpuInfo',
   //更新已有的SPU
   UPDATESPU_URL = '/admin/product/updateSpuInfo',
+  
+  ADDSKU_URL='/admin/product/saveSkuInfo',
+
+  SKUINFO_URL='/admin/product/findBySpuId/',
 }
 const reqSpu = (page: number, limit: number, category3Id: string | number) => request.get<any, HasSpuResponseData>(API.GETSPU_URL + `${page}/${limit}?category3Id=${category3Id}`)
 const reqTradeMark = () => request.get<any, AllTradeMark>(API.ALLTRADEMARK_URL)
@@ -33,6 +37,11 @@ const reqAddOrUpdateSpu=(data:SpuData)=>{
    return request.post<any,any>(API.ADDSPU_URL,data)
   }
 }
+//新增SKU
+const reqAddSku=(data:SkuData)=>request.post<any,any>(API.ADDSKU_URL,data)
+
+//查询sku
+const reqSkuList=(spuId:number | string)=>request.get<any,any>(API.SKUINFO_URL+spuId)
 
 
 export {
@@ -42,5 +51,7 @@ export {
   reqSpuHasSaleAttr,
   reqAllSaleAttr,
   reqAddOrUpdateSpu,
+  reqAddSku,
+  reqSkuList,
 
 }
