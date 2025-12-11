@@ -14,10 +14,12 @@ enum API {
   ADDSPU_URL = '/admin/product/saveSpuInfo',
   //更新已有的SPU
   UPDATESPU_URL = '/admin/product/updateSpuInfo',
-  
-  ADDSKU_URL='/admin/product/saveSkuInfo',
 
-  SKUINFO_URL='/admin/product/findBySpuId/',
+  ADDSKU_URL = '/admin/product/saveSkuInfo',
+
+  SKUINFO_URL = '/admin/product/findBySpuId/',
+
+  REMOVESPU_URL = '/admin/product/deleteSpu/',
 }
 const reqSpu = (page: number, limit: number, category3Id: string | number) => request.get<any, HasSpuResponseData>(API.GETSPU_URL + `${page}/${limit}?category3Id=${category3Id}`)
 const reqTradeMark = () => request.get<any, AllTradeMark>(API.ALLTRADEMARK_URL)
@@ -30,19 +32,20 @@ const reqSpuHasSaleAttr = (spuId: number) => request.get<any, SaleAllResponseDat
 const reqAllSaleAttr = () => request.get<any, HasSaleAttrResponseData>(API.ALLSALEATTR_URL);
 
 //更新/新增spu
-const reqAddOrUpdateSpu=(data:SpuData)=>{
-  if(data.id){
-   return request.post<any,any>(API.UPDATESPU_URL,data)
-  }else{
-   return request.post<any,any>(API.ADDSPU_URL,data)
+const reqAddOrUpdateSpu = (data: SpuData) => {
+  if (data.id) {
+    return request.post<any, any>(API.UPDATESPU_URL, data)
+  } else {
+    return request.post<any, any>(API.ADDSPU_URL, data)
   }
 }
 //新增SKU
-const reqAddSku=(data:SkuData)=>request.post<any,any>(API.ADDSKU_URL,data)
+const reqAddSku = (data: SkuData) => request.post<any, any>(API.ADDSKU_URL, data)
 
 //查询sku
-const reqSkuList=(spuId:number | string)=>request.get<any,any>(API.SKUINFO_URL+spuId)
+const reqSkuList = (spuId: number | string) => request.get<any, any>(API.SKUINFO_URL + spuId)
 
+const reqRemoveSpu = (spuId: number | string) => request.delete<any, any>(API.REMOVESPU_URL + spuId)
 
 export {
   reqSpu,
@@ -53,5 +56,6 @@ export {
   reqAddOrUpdateSpu,
   reqAddSku,
   reqSkuList,
+  reqRemoveSpu,
 
 }

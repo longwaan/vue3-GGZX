@@ -2,10 +2,11 @@
 import category from '@/components/Category/index.vue'
 import { onMounted, ref, watch } from 'vue';
 import useCategoryStore from '@/stores/modules/category';
-import { reqSkuList, reqSpu } from '@/api/product/spu';
+import { reqRemoveSpu, reqSkuList, reqSpu } from '@/api/product/spu';
 import spuForm from './spuForm.vue';
 import skuFrom from './skuFrom.vue';
 import type { HasSpuResponseData, SkuData, SpuData } from '@/api/product/spu/type';
+import { ElMessage } from 'element-plus';
 let categoryStore = useCategoryStore()
 let pageNo = ref<number>(1)
 let pageSize = ref<number>(3)
@@ -80,6 +81,23 @@ const findSku = async (row: any) => {
   }
 }
 
+const deleteSpu = async (id: any) => {
+  let result = await reqRemoveSpu(id)
+  // console.log(result)
+  if (result.code === 200) {
+    ElMessage({
+      type: 'success',
+      message: '删除成功'
+    })
+  } else {
+    ElMessage({
+      type: 'error',
+      message: '删除失败'
+    })
+  }
+  getSpu(pageNo.value)
+}
+
 </script>
 
 <template>
@@ -98,7 +116,11 @@ const findSku = async (row: any) => {
               <el-button icon="Plus" @click="addSku(row)" title="添加sku" type="primary" size="small"></el-button>
               <el-button icon="Edit" @click="updateSpu(row)" title="修改spu" type="warning" size="small"></el-button>
               <el-button icon="View" title="查看spu列表" type="info" size="small" @click="findSku(row)"></el-button>
-              <el-button icon="Delete" title="删除spu" type="danger" size="small"></el-button>
+              <el-popconfirm :title="`你确定要删除${row.spuName}?`" @confirm="deleteSpu(row.id)" width="200px">
+                <template #reference>
+                  <el-button icon="Delete" title="删除spu" type="danger" size="small"></el-button>
+                </template>
+              </el-popconfirm>
             </template>
           </el-table-column>
         </el-table>
