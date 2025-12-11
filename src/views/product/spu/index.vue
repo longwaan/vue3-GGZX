@@ -2,18 +2,20 @@
 import category from '@/components/Category/index.vue'
 import { onMounted, ref, watch } from 'vue';
 import useCategoryStore from '@/stores/modules/category';
-import { reqSpu } from '@/api/product/spu';
+import { reqSkuList, reqSpu } from '@/api/product/spu';
 import spuForm from './spuForm.vue';
 import skuFrom from './skuFrom.vue';
-import type { HasSpuResponseData, SpuData } from '@/api/product/spu/type';
+import type { HasSpuResponseData, SkuData, SpuData } from '@/api/product/spu/type';
 let categoryStore = useCategoryStore()
 let pageNo = ref<number>(1)
 let pageSize = ref<number>(3)
 let spuAttr = ref<SpuData[]>([])
 let spu = ref<any>()
-let sku =ref<any>()
+let sku = ref<any>()
 let total = ref<number>()
 let scene = ref<number>(0)//0：显示已有SPU 1：添加或者修改已有SPU  2：添加SKU的结构
+let dialogVisible = ref<boolean>(false)
+let skuDataList = ref<SkuData>()
 const getCategory = () => {
   categoryStore.getC1()
 }
@@ -66,7 +68,16 @@ const changeScene = (obj: any) => {
 const addSku = (row: SpuData) => {
   scene.value = 2
   // console.log(row)
-  sku.value.initSkuData(categoryStore.c1Id,categoryStore.c2Id,row)
+  sku.value.initSkuData(categoryStore.c1Id, categoryStore.c2Id, row)
+}
+
+const findSku = async (row: any) => {
+  let result = await reqSkuList(row.id)
+  skuDataList.value = result.data
+  if (result.code === 200) {
+    dialogVisible.value = true
+
+  }
 }
 
 </script>
@@ -86,7 +97,7 @@ const addSku = (row: SpuData) => {
             <template #="{ row, index }">
               <el-button icon="Plus" @click="addSku(row)" title="添加sku" type="primary" size="small"></el-button>
               <el-button icon="Edit" @click="updateSpu(row)" title="修改spu" type="warning" size="small"></el-button>
-              <el-button icon="View" title="查看spu列表" type="info" size="small"></el-button>
+              <el-button icon="View" title="查看spu列表" type="info" size="small" @click="findSku(row)"></el-button>
               <el-button icon="Delete" title="删除spu" type="danger" size="small"></el-button>
             </template>
           </el-table-column>
@@ -98,6 +109,20 @@ const addSku = (row: SpuData) => {
       <spu-form ref="spu" v-show="scene === 1" @changeScene="changeScene"></spu-form>
       <sku-from ref="sku" v-show="scene === 2" @changeScene="changeScene"></sku-from>
     </el-card>
+
+
+    <el-dialog v-model="dialogVisible" title="sku列表">
+      <el-table :data="skuDataList" style="width: 100%">
+        <el-table-column prop="skuName" label="SKU名称" />
+        <el-table-column prop="price" label="SKU价格" " />
+          <el-table-column  prop=" weight" label=" SKU重量" />
+        <el-table-column label="SKU图片">
+          <template #="{ row, $index }">
+            <img :src="row.skuDefaultImg" style="width: 40px;height: 40px;">
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
