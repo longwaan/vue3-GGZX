@@ -19,7 +19,6 @@ let allSaleAttr = ref<HasSaleAttr[]>([]);
 //tag
 const inputValue = ref('')
 // const inputVisible = ref(false)
-const activeInputRowId = ref<number | string | null>(null);
 const InputRef = ref<InputInstance>()
 //存储已有的SPU对象
 let SpuParams = ref<SpuData>({
@@ -138,8 +137,7 @@ const handleClose = (row: any, index: number) => {
 // }
 
 const showInput = (row: any) => {
-  // 仅标记当前行的输入框为激活状态
-  activeInputRowId.value = row.id;
+  row.flag = true
   inputValue.value = ''; // 清空输入框
   nextTick(() => {
     InputRef.value?.input?.focus()
@@ -154,6 +152,17 @@ const handleInputConfirm = (row: any) => {
     saleAttrValueName: inputValue.value
   }
 
+  const repeat = row.spuSaleAttrValueList.find((item: any) => {
+    return item.saleAttrValueName === inputValue.value
+  })
+  if (repeat) {
+    ElMessage({
+      type: 'error',
+      message: '属性不能重复'
+    })
+    return
+  }
+
   if (inputValue.value && inputValue.value.trim()) {
     if (!row.spuSaleAttrValueList) {
       row.spuSaleAttrValueList = [];
@@ -161,8 +170,8 @@ const handleInputConfirm = (row: any) => {
     row.spuSaleAttrValueList.push(newSaleAttrValue)
     // console.log(inputValue.value, row.baseSaleAttrId)
   }
-  // 关闭当前行的输入框
-  activeInputRowId.value = null;
+
+  row.flag = false;
   inputValue.value = ''
 }
 
@@ -202,7 +211,7 @@ const cancel = () => {
 }
 
 //新增spu
-const initAddSpu = async(c3Id: number | string) => {
+const initAddSpu = async (c3Id: number | string) => {
   //清空
   Object.assign(SpuParams.value, {
     category3Id: "",
@@ -211,7 +220,7 @@ const initAddSpu = async(c3Id: number | string) => {
     tmId: "",
     spuSaleAttrList: [],
     spuImageList: [],
-    id:undefined,
+    id: undefined,
   });
 
   saleAttr.value = []
@@ -279,7 +288,7 @@ defineExpose({ initHasSpuData, initAddSpu })
                 closable :disable-transitions="false" @close="handleClose(row, index)">
                 {{ item.saleAttrValueName }}
               </el-tag>
-              <el-input v-if="activeInputRowId === row.id" ref="InputRef" v-model="inputValue" class="w-20" size="small"
+              <el-input v-if="row.flag == true" ref="InputRef" v-model="inputValue" class="w-20" size="small"
                 @keyup.enter="handleInputConfirm(row)" @blur="handleInputConfirm(row)" />
               <el-button v-else class="button-new-tag" size="small" @click="showInput(row)" icon="Plus">
               </el-button>
@@ -287,7 +296,7 @@ defineExpose({ initHasSpuData, initAddSpu })
           </el-table-column>
           <el-table-column label="操作">
             <template #="{ row, $index }">
-              <el-button size="small" type="danger" icon="Delete" @click="saleAttr.splice($index,1)"></el-button>
+              <el-button size="small" type="danger" icon="Delete" @click="saleAttr.splice($index, 1)"></el-button>
             </template>
           </el-table-column>
         </el-table>
