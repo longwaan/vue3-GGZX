@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reqCancelSale, reqOnSale, reqSkuInfo, reqSkuList } from '@/api/product/sku';
+import { reqCancelSale, reqOnSale, reqRemoveSku, reqSkuInfo, reqSkuList } from '@/api/product/sku';
 import type { SkuData, } from '@/api/product/sku/type';
 import { reqSpuImageList } from '@/api/product/spu';
 import { ElMessage } from 'element-plus';
@@ -77,6 +77,21 @@ const detail = async (row: SkuData) => {
   // console.log(result1)
 
 }
+const deleteSku = async (id: number) => {
+  let result = await reqRemoveSku(id)
+  if (result.code === 200) {
+    ElMessage({
+      type: 'success',
+      message: '删除成功'
+    })
+  } else {
+    ElMessage({
+      type: 'error',
+      message: '删除失败'
+    })
+  }
+  getSku()
+}
 </script>
 
 <template>
@@ -98,7 +113,11 @@ const detail = async (row: SkuData) => {
             :title="row.isSale == 0 ? '上架' : '下架'"></el-button>
           <el-button type="primary" icon="Edit" size="small" @click="edit(row)" title="编辑"></el-button>
           <el-button type="primary" icon="InfoFilled" size="small" title="详情" @click="detail(row)"></el-button>
-          <el-button type="danger" icon="Delete" size="small" title="删除"></el-button>
+          <el-popconfirm :title="`你确定要删除${row.skuName}?`" @confirm="deleteSku(row.id)" width="200px">
+            <template #reference>
+              <el-button type="danger" icon="Delete" size="small" title="删除"></el-button>
+            </template>
+          </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
