@@ -2,7 +2,7 @@
 import { reqAddOrUpdateAttr, reqAttr, reqRemoveAttr } from '@/api/product/attr';
 import type { AttrList, Attr, AttrResponseData, AttrValue } from '@/api/product/attr/type';
 import Category from '@/components/Category/index.vue'
-import { nextTick, reactive, ref, watch } from 'vue';
+import { nextTick, onBeforeUnmount, reactive, ref, watch } from 'vue';
 import useCategoryStore from '@/stores/modules/category';
 import { ElMessage } from 'element-plus';
 let categoryStore = useCategoryStore()
@@ -137,6 +137,11 @@ const deleteAttr = async (id: number) => {
     getAttr();
   }
 }
+
+//路由销毁前清空路由
+onBeforeUnmount(() => {
+  categoryStore.$reset()
+})
 </script>
 
 <template>

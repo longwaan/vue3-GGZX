@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import category from '@/components/Category/index.vue'
-import { onMounted, ref, watch } from 'vue';
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import useCategoryStore from '@/stores/modules/category';
 import { reqRemoveSpu, reqSkuList, reqSpu } from '@/api/product/spu';
 import spuForm from './spuForm.vue';
@@ -97,6 +97,11 @@ const deleteSpu = async (id: any) => {
   }
   getSpu(pageNo.value)
 }
+
+//路由组件销毁前，情况仓库关于分类的数据
+onBeforeUnmount(() => {
+  categoryStore.$reset()
+})
 
 </script>
 
