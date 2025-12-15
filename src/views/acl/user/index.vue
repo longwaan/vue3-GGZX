@@ -267,7 +267,7 @@ const batchRemove = async () => {
 
   <el-drawer v-model="drawer">
     <template #header>
-      <h4>添加新用户</h4>
+      <h4>{{ userForm.id?'更新用户':'新增用户' }}</h4>
     </template>
     <template #default>
       <el-form ref="userFormRef" :model="userForm" label-width="100px" :rules="rules">
