@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reqAddOrUpdateUser, reqDoRole, reqGetUser, reqToRole } from '@/api/acl/user/inndex';
+import { reqAddOrUpdateUser, reqDeleteUser, reqDoRole, reqGetUser, reqRemoveUser, reqToRole } from '@/api/acl/user';
 import type { RoleData, SetRoleData, User, UserResponseData } from '@/api/acl/user/type';
 import { ElMessage, type CheckboxValueType, type FormInstance, type FormRules } from 'element-plus';
 import { onMounted, reactive, ref } from 'vue';
@@ -16,6 +16,7 @@ const allRoleList = ref<RoleData[]>([])
 const userRole = ref<RoleData[]>([])
 const checkAll = ref<boolean>(false)
 const isIndeterminate = ref<boolean>(true)
+const multipleSelection = ref<any>([])
 const userForm = reactive<User>({
   username: '',
   name: '',
@@ -172,6 +173,52 @@ const confirm = async () => {
     })
   }
 }
+
+
+const deleteUser = async (id: number) => {
+  let result = await reqRemoveUser(id)
+  if (result.code === 200) {
+    ElMessage({
+      type: 'success',
+      message: '删除成功',
+    })
+    getUserInfo()
+  } else {
+    ElMessage({
+      type: 'error',
+      message: '删除失败',
+    })
+    getUserInfo()
+  }
+}
+
+//当选择项发生变化时会触发该事件
+const handleSelectionChange = (val: User[]) => {
+  multipleSelection.value = val.map((item) => {
+    return item.id
+  })
+  // console.log(val)
+  console.log(multipleSelection.value)
+}
+
+const batchRemove =async () => {
+  let result =await reqDeleteUser(multipleSelection.value)
+  if(result.code===200){
+    ElMessage({
+      type:'success',
+      message:'批量删除成功'
+    })
+    getUserInfo()
+  }else{
+    ElMessage({
+      type:'error',
+      message:'批量删除失败',
+    })
+    getUserInfo()
+  }
+
+}
+
 </script>
 
 <template>
@@ -188,10 +235,10 @@ const confirm = async () => {
   </el-card>
   <el-card>
     <el-button type="primary" @click="addUser">新增用户</el-button>
-    <el-button type="danger">批量删除</el-button>
+    <el-button type="danger" @click="batchRemove">批量删除</el-button>
     <el-table ref="multipleTableRef" :data="userInfo" row-key="id" style="width: 100%;margin: 10px 0;"
       @selection-change="handleSelectionChange" border>
-      <el-table-column type="selection" :selectable="selectable" />
+      <el-table-column type="selection" />
       <el-table-column type="index" label="#" align="center" />
       <el-table-column label="id" prop="id" align="center"></el-table-column>
       <el-table-column property="name" label="用户名字" align="center" />
