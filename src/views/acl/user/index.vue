@@ -46,6 +46,7 @@ const reset = () => {
 const addUser = () => {
   drawer.value = true
   Object.assign(userForm, {
+    id: 0,
     username: '',
     name: '',
     password: ''
@@ -201,18 +202,18 @@ const handleSelectionChange = (val: User[]) => {
   console.log(multipleSelection.value)
 }
 
-const batchRemove =async () => {
-  let result =await reqDeleteUser(multipleSelection.value)
-  if(result.code===200){
+const batchRemove = async () => {
+  let result = await reqDeleteUser(multipleSelection.value)
+  if (result.code === 200) {
     ElMessage({
-      type:'success',
-      message:'批量删除成功'
+      type: 'success',
+      message: '批量删除成功'
     })
     getUserInfo()
-  }else{
+  } else {
     ElMessage({
-      type:'error',
-      message:'批量删除失败',
+      type: 'error',
+      message: '批量删除失败',
     })
     getUserInfo()
   }
@@ -274,10 +275,10 @@ const batchRemove =async () => {
           <el-input v-model="userForm.username" placeholder="请输入用户姓名" />
         </el-form-item>
         <el-form-item label="用户昵称" prop="name">
-          <el-input v-model="userForm.name" placeholder="请输入用户姓名" />
+          <el-input v-model="userForm.name" placeholder="请输入用户昵称" />
         </el-form-item>
-        <el-form-item label="用户密码" prop="password">
-          <el-input v-model="userForm.password" placeholder="请输入用户姓名" />
+        <el-form-item label="用户密码" prop="password" v-if="!userForm.id">
+          <el-input v-model="userForm.password" placeholder="请输入用户密码" />
         </el-form-item>
       </el-form>
     </template>
