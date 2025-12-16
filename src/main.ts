@@ -10,6 +10,7 @@ import './styles/index.scss'
 import App from './App.vue'
 import router from './router'
 import './permisstion'
+import 'element-plus/theme-chalk/dark/css-vars.css'
 const app = createApp(App)
 
 app.use(pinia)

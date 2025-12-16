@@ -12,6 +12,7 @@ const { refresh } = storeToRefs(useSetting)
 const UserStore = useUserStore()
 const $router = useRouter()
 const $route = useRoute()
+let dark = ref<boolean>(false)
 const updateRefresh = () => {
   refresh.value = !refresh.value
   // console.log('1111')
@@ -32,6 +33,11 @@ const logout = async () => {
 
 }
 
+const changeDark = () => {
+  let html = document.documentElement
+  dark.value ? html.className = 'dark' : html.className = '';
+}
+
 
 </script>
 
@@ -40,7 +46,17 @@ const logout = async () => {
     <div>
       <el-button icon="refresh" circle @click="updateRefresh"></el-button>
       <el-button icon="FullScreen" circle @click="fullScreen"></el-button>
-      <el-button icon="Setting" circle></el-button>
+      <el-popover title="主题设置" :width="200" trigger="hover">
+        <el-form label-width="80px">
+          <el-form-item label="主题颜色"">A</el-form-item>
+            <el-form-item label=" 暗黑模式"">
+            <el-switch @change="changeDark" v-model="dark" active-action-icon="Sunny" inactive-action-icon="Moon" />
+          </el-form-item>
+        </el-form>
+        <template #reference>
+          <el-button icon="Setting" circle></el-button>
+        </template>
+      </el-popover>
     </div>
     <div class="avatar_container">
       <el-avatar :src="UserStore.avatar" />
