@@ -9,7 +9,7 @@ enum API {
   //给相应的职位分配权限
   SETPERMISSION_URL = '/admin/acl/permission/doAssign?',
 
-  REMOVEROLE_URL='/admin/acl/role/remove/{id}'
+  REMOVEROLE_URL='/admin/acl/role/remove/'
 
 }
 
