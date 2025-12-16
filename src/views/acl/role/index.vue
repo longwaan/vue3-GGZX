@@ -1,16 +1,21 @@
 <script setup lang="ts">
-import { reqAddOrUpdateRole, reqGetRole } from '@/api/acl/role';
-import type { RoleData, RoleResponseData } from '@/api/acl/role/type';
+import { reqAddOrUpdateRole, reqGetAllPermission, reqGetRole, reqSetPermission } from '@/api/acl/role';
+import type { MenuList, RoleData, } from '@/api/acl/role/type';
 import { ElMessage } from 'element-plus';
 import { nextTick, onMounted, reactive, ref } from 'vue';
 
 const keyword = ref<string>('')
 const pageNo = ref<number>(1)
 const pageSize = ref<number>(5)
-const roleData = ref<RoleResponseData>()
+const roleData = ref<RoleData[]>([])
 const total = ref<number>()
 const dialogVisible = ref<boolean>(false)
 const roleFormRef = ref()
+const drawer = ref<boolean>(false)
+const menuArr = ref<MenuList>([])
+//存储被选中的树节点id
+const selectArr = ref<number[]>([])
+const treeRef = ref()
 const roleParams = reactive<RoleData>({
   roleName: '',
 })
@@ -63,7 +68,7 @@ const cancel = () => {
 }
 
 const validateName = (rule: any, value: any, callback: any) => {
-  if (!value||value.trim().length < 2) {
+  if (!value || value.trim().length < 2) {
     callback(new Error('职位角色名称不可少于2位'))
   } else {
     callback()
@@ -94,6 +99,64 @@ const save = async () => {
     getRoleInfo()
   }
 }
+const defaultProps = {
+  children: 'children',
+  label: 'name',
+}
+
+const filterSelectArr = (allData: any, initArr: any) => {
+  allData.forEach((item: any) => {
+    if (item.select && item.level == 4) {
+      initArr.push(item.id)
+    }
+    if (item.children && item.children.length > 0) {
+      filterSelectArr(item.children, initArr)
+    }
+
+  });
+  return initArr;
+}
+
+const setPermission = async (row: any) => {
+  drawer.value = true
+  Object.assign(roleParams, row)
+  let result: any = await reqGetAllPermission(row.id)
+  // console.log(result)
+  if (result.code === 200) {
+    menuArr.value = result.data
+    selectArr.value = filterSelectArr(menuArr.value, [])
+  }
+}
+
+const cancelClick = () => {
+  drawer.value = false
+}
+
+const confirmClick = async () => {
+  const roleId = roleParams.id as number
+  const arr1 = treeRef.value.getCheckedKeys()
+  const arr2 = treeRef.value.getHalfCheckedKeys()
+  const permissionId = [...arr1, ...arr2]
+  let result = await reqSetPermission(roleId, permissionId)
+  if (result.code === 200) {
+    ElMessage({
+      type: 'success',
+      message: '权限分配成功',
+    })
+    drawer.value = false
+    getRoleInfo()
+  } else {
+    ElMessage({
+      type: 'error',
+      message: '权限分配失败',
+    })
+    drawer.value = false
+    getRoleInfo()
+  }
+
+
+}
+
 
 
 </script>
@@ -121,7 +184,7 @@ const save = async () => {
       <el-table-column prop="updateTime" label="更新时间" />
       <el-table-column prop="address" label="操作">
         <template #="{ row, $index }">
-          <el-button type="primary" icon="User" size="small" @click="setPermisstion(row)">分配权限</el-button>
+          <el-button type="primary" icon="User" size="small" @click="setPermission(row)">分配权限</el-button>
           <el-button type="primary" icon="Edit" size="small" @click="updateRole(row)">编辑</el-button>
 
           <el-popconfirm :title="`你确定要删除${row.roleName}吗？`" width="260px" @confirm="removeRole(row.id)">
@@ -149,6 +212,24 @@ const save = async () => {
       </div>
     </template>
   </el-dialog>
+
+  <el-drawer v-model="drawer">
+    <template #header>
+      <h4>分配菜单与按钮的权限</h4>
+    </template>
+    <template #default>
+      <div>
+        <el-tree ref="treeRef" :data="menuArr" show-checkbox node-key="id" :default-expanded-keys="[2, 3]"
+          :default-checked-keys="selectArr" :props="defaultProps" />
+      </div>
+    </template>
+    <template #footer>
+      <div style="flex: auto">
+        <el-button @click="cancelClick">取消</el-button>
+        <el-button type="primary" @click="confirmClick">确认</el-button>
+      </div>
+    </template>
+  </el-drawer>
 </template>
 
 <style lang="scss" scoped>
