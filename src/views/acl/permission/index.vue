@@ -96,22 +96,23 @@ const removeMenu = async (id: number) => {
     <el-table-column prop="updateTime" label="修改时间" />
     <el-table-column label="操作">
       <template #="{ row, index }">
-        <el-button @click="addPermisstion(row)" type="primary" size="small">
+        <el-button @click="addPermisstion(row)" type="primary" size="small" :disabled="row.level === 4 ? true : false">
           {{ row.level === 3 ? '添加功能' : '添加菜单' }}
         </el-button>
-        <el-button @click="updatePermisstion(row)" type="primary" size="small">编辑</el-button>
+        <el-button @click="updatePermisstion(row)" type="primary" size="small"
+          :disabled="row.level === 1 ? true : false">编辑</el-button>
 
 
         <el-popconfirm :title="`你确定要删除${row.name}吗？`" width="260px" @confirm="removeMenu(row.id)">
           <template #reference>
-            <el-button type="primary" size="small">删除</el-button>
+            <el-button type="primary" size="small" :disabled="row.level === 1 ? true : false">删除</el-button>
           </template>
         </el-popconfirm>
       </template>
     </el-table-column>
   </el-table>
 
-  <el-dialog v-model="dialogVisible" title="新增菜单" width="500">
+  <el-dialog v-model="dialogVisible" :title="menuInfo.id ? '更新菜单' : '新增菜单'" width="500">
     <el-form ref="menuFormRef" :model="menuInfo" label-width="80px">
       <el-form-item label="名称">
         <el-input v-model="menuInfo.name" placeholder="请输入名称" />
