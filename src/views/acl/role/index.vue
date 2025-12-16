@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reqAddOrUpdateRole, reqGetAllPermission, reqGetRole, reqSetPermission } from '@/api/acl/role';
+import { reqAddOrUpdateRole, reqDeleteRole, reqGetAllPermission, reqGetRole, reqSetPermission } from '@/api/acl/role';
 import type { MenuList, RoleData, } from '@/api/acl/role/type';
 import { ElMessage } from 'element-plus';
 import { nextTick, onMounted, reactive, ref } from 'vue';
@@ -144,7 +144,9 @@ const confirmClick = async () => {
       message: '权限分配成功',
     })
     drawer.value = false
-    getRoleInfo()
+    // getRoleInfo()
+    //删除当前账户时需要重新加载页面
+    window.location.reload()
   } else {
     ElMessage({
       type: 'error',
@@ -155,6 +157,23 @@ const confirmClick = async () => {
   }
 
 
+}
+
+const removeRole = async (id: number) => {
+  let result = await reqDeleteRole(id)
+  if (result.code === 200) {
+    ElMessage({
+      type: 'success',
+      message: '删除成功',
+    })
+    getRoleInfo()
+  } else {
+    ElMessage({
+      type: 'error',
+      message: "删除失败",
+    })
+    getRoleInfo()
+  }
 }
 
 

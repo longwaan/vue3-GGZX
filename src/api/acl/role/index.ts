@@ -9,6 +9,8 @@ enum API {
   //给相应的职位分配权限
   SETPERMISSION_URL = '/admin/acl/permission/doAssign?',
 
+  REMOVEROLE_URL='/admin/acl/role/remove/{id}'
+
 }
 
 const reqGetRole = (page: number, limit: number, roleName: string) => request.get<any, RoleResponseData>(API.GETROLE + `${page}/${limit}?roleName=${roleName}`)
@@ -24,12 +26,13 @@ const reqGetAllPermission = (roleId: number) => request.get<any, MenuResponseDat
 //分配权限
 const reqSetPermission = (roleId: number, permissionId: number[]) => request.post<any, any>(API.SETPERMISSION_URL + `roleId=${roleId}&permissionId=${permissionId}`)
 
-
+const reqDeleteRole=(roleId:number)=>request.delete<any,any>(API.REMOVEROLE_URL+roleId)
 
 export {
   reqGetRole,
   reqAddOrUpdateRole,
   reqGetAllPermission,
   reqSetPermission,
+  reqDeleteRole,
 }
 
