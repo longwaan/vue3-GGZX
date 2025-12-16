@@ -1,10 +1,20 @@
 <script setup lang="ts">
 import Menus from '@/layout/menu/index.vue'
+import { ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 defineProps(['menuList'])
+const route = useRoute()
+// 设置当前激活的菜单路径
+const activePath = ref(route.path)
+
+// 监听路由变化，更新激活菜单
+watch(() => route.path, (newPath) => {
+  activePath.value = newPath
+})
 </script>
 
 <template>
-  <el-menu unique-opened router>
+  <el-menu unique-opened router :default-active="activePath">
     <template v-for="(item, index) in menuList" :key="item.path">
       <!-- 没有子路由的菜单 -->
       <template v-if="!item.children">
