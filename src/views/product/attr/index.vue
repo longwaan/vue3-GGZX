@@ -31,6 +31,7 @@ const getAttr = async () => {
 
 const addAttr = () => {
   Object.assign(attrParam, {
+    id:0,
     attrName: '',
     categoryId: categoryStore.c3Id,
     categoryLevel: 3,
