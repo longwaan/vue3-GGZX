@@ -4,7 +4,7 @@ enum API {
   GETMENULIST = '/admin/acl/permission',
   ADDMENU_URL = '/admin/acl/permission/save',
   UPDATEMENU_URL = '/admin/acl/permission/update',
-  REMOVEMENU_URL = '/admin/acl/permission/remove/{id}'
+  REMOVEMENU_URL = '/admin/acl/permission/remove/'
 
 }
 
