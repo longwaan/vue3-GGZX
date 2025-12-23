@@ -87,7 +87,7 @@ const initCharts = async () => {
 
 onMounted(() => {
   initCharts()
-  getSexData()
+  // getSexData()
 
 })
 
